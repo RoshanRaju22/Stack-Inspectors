@@ -1,0 +1,33 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Set up your Lidar and data collection
+
+# Create empty arrays to store the Lidar data
+lidar_angles = np.empty(0)
+lidar_distances = np.empty(0)
+
+# Collect Lidar data
+while True:
+    # Retrieve a data point from the Lidar
+    angle, distance = get_lidar_data()
+
+    # Store the data point in the arrays
+    lidar_angles = np.append(lidar_angles, angle)
+    lidar_distances = np.append(lidar_distances, distance)
+
+    # Fit a line to the data
+    if len(lidar_angles) > 10: # Only fit line when enough data is collected
+        # Convert the Lidar angles to x-coordinates
+        x = np.sin(np.radians(lidar_angles)) * lidar_distances
+
+        # Use polyfit to calculate the slope and y-intercept of the line of best fit
+        m, b = np.polyfit(x, lidar_distances, 1)
+
+        # Plot the Lidar data and line of best fit
+        plt.clf() # Clear the previous plot
+        plt.plot(x, lidar_distances, '.', color='blue')
+        plt.plot(x, m*x + b, '-', color='red')
+        plt.xlim([np.min(x), np.max(x)])
+        plt.ylim([0, np.max(lidar_distances)])
+        plt.pause(0.001)
